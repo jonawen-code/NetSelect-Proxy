@@ -76,8 +76,29 @@ object CdnIpOptimizer {
 
         val origHost = profile.host
         val origSni = profile.sni
-        if (profile.host.isNullOrEmpty()) profile.host = originalServer
-        if (profile.sni.isNullOrEmpty()) profile.sni = originalServer
+
+        // Determine effective domain for TLS SNI and HTTP Host header
+        val domainName = when {
+            Utils.isDomainName(profile.sni) -> profile.sni
+            Utils.isDomainName(profile.host) -> profile.host
+            Utils.isDomainName(originalServer) -> originalServer
+            else -> null
+        }
+
+        // If a valid domain name exists, preserve it in host and sni if empty
+        if (!domainName.isNullOrEmpty()) {
+            if (profile.host.isNullOrEmpty()) profile.host = domainName
+            if (profile.sni.isNullOrEmpty()) profile.sni = domainName
+        }
+
+        // If no valid domain name exists (e.g. direct VPS IP node),
+        // we cannot substitute Cloudflare CDN IPs because CDN proxying requires a valid domain SNI/Host.
+        // Retain original working server IP as-is!
+        if (domainName.isNullOrEmpty()) {
+            LogUtil.d(AppConfig.TAG, "直连节点（非 CDN 域名）: $guid -> 保留原 IP $originalServer")
+            MmkvManager.encodeServerConfig(guid, profile)
+            return
+        }
 
         val port = profile.serverPort?.toIntOrNull() ?: 443
 
