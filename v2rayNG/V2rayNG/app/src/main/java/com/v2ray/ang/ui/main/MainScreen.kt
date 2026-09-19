@@ -129,6 +129,10 @@ fun MainScreen(
     if (shareQRCodeBitmap != null) {
         QRCodeDialog(bitmap = shareQRCodeBitmap, onDismiss = { onAction(MainAction.DismissQRCodeDialog) })
     }
+    OptimizeProgressDialog(
+        state = uiState.optimizeDialogState,
+        onDismiss = { onAction(MainAction.DismissOptimizeDialog) }
+    )
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -163,7 +167,7 @@ fun MainScreen(
                     onAction = onAction,
                     onMoreMenuAction = { action ->
                         when (action) {
-                            MainMoreMenuAction.OptimizeCurrentServerIp -> onAction(MainAction.OptimizeCurrentServerIp)
+                            MainMoreMenuAction.AutoBatchOptimizeNodes -> onAction(MainAction.AutoBatchOptimizeNodes)
                             MainMoreMenuAction.RestartService -> onAction(MainAction.RestartService)
                             MainMoreMenuAction.DeleteAll -> showDelAllConfirm = true
                             MainMoreMenuAction.DeleteDuplicate -> showDelDuplicateConfirm = true

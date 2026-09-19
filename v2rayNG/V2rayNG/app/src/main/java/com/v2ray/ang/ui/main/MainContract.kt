@@ -26,7 +26,8 @@ data class MainUiState(
     val locateTarget: LocateTarget? = null,
     val confirmRemove: Boolean = false,
     val doubleColumnDisplay: Boolean = false,
-    val shareQRCodeBitmap: android.graphics.Bitmap? = null
+    val shareQRCodeBitmap: android.graphics.Bitmap? = null,
+    val optimizeDialogState: OptimizeDialogState = OptimizeDialogState()
 )
 
 /**
@@ -62,8 +63,8 @@ sealed interface MainAction {
     data class ShareQRCode(val guid: String) : MainAction
     data class ShareClipboard(val guid: String) : MainAction
     data class ShareFullContent(val guid: String) : MainAction
-    data class OptimizeServerIp(val guid: String) : MainAction
-    data object OptimizeCurrentServerIp : MainAction
+    data object AutoBatchOptimizeNodes : MainAction
+    data object DismissOptimizeDialog : MainAction
     data object DismissQRCodeDialog : MainAction
 
     data class ImportBatchConfig(val configText: String) : MainAction

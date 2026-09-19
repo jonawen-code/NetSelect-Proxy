@@ -27,7 +27,7 @@ private enum class ImportMenuAction(@StringRes val labelRes: Int, val action: Ma
 }
 
 enum class MainMoreMenuAction(@StringRes val labelRes: Int) {
-    OptimizeCurrentServerIp(R.string.title_optimize_current_server_ip),
+    AutoBatchOptimizeNodes(R.string.menu_auto_batch_optimize),
     RestartService(R.string.title_service_restart),
     DeleteAll(R.string.title_del_all_config),
     DeleteDuplicate(R.string.title_del_duplicate_config),
@@ -45,7 +45,6 @@ internal enum class ServerMenuAction(
     val isShareAction: Boolean,
     val supportsComplexProfiles: Boolean,
 ) {
-    OptimizeIp(R.string.action_optimize_ip, isShareAction = false, supportsComplexProfiles = false),
     ShareQRCode(R.string.share_method_qrcode, isShareAction = true, supportsComplexProfiles = false),
     ShareClipboard(R.string.share_method_clipboard, isShareAction = true, supportsComplexProfiles = false),
     ShareFullContent(R.string.share_method_full_content, isShareAction = true, supportsComplexProfiles = true),
@@ -93,7 +92,6 @@ fun ShareMethodDialog(
         onSelected = { action ->
             onDismiss()
             when (action) {
-                ServerMenuAction.OptimizeIp -> onAction(MainAction.OptimizeServerIp(guid))
                 ServerMenuAction.ShareQRCode -> onAction(MainAction.ShareQRCode(guid))
                 ServerMenuAction.ShareClipboard -> onAction(MainAction.ShareClipboard(guid))
                 ServerMenuAction.ShareFullContent -> onAction(MainAction.ShareFullContent(guid))

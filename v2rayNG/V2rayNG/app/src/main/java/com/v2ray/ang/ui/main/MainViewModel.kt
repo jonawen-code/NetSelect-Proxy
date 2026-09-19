@@ -292,8 +292,8 @@ class MainViewModel(
                 _uiState.update { it.copy(shareQRCodeBitmap = bitmap) }
             }
 
-            is MainAction.OptimizeServerIp -> optimizeServerIp(action.guid)
-            MainAction.OptimizeCurrentServerIp -> optimizeServerIp(uiState.value.selectedGuid ?: "")
+            MainAction.AutoBatchOptimizeNodes -> runAutoBatchOptimize()
+            MainAction.DismissOptimizeDialog -> dismissOptimizeDialog()
             MainAction.DismissQRCodeDialog -> {
                 _uiState.update { it.copy(shareQRCodeBitmap = null) }
             }
@@ -787,27 +787,57 @@ class MainViewModel(
         }
     }
 
-    fun optimizeServerIp(guid: String) {
-        val targetGuid = guid.ifEmpty { uiState.value.selectedGuid ?: "" }
-        if (targetGuid.isEmpty()) {
-            toast(R.string.title_file_chooser)
-            return
+    fun runAutoBatchOptimize() {
+        _uiState.update {
+            it.copy(
+                optimizeDialogState = OptimizeDialogState(
+                    showDialog = true,
+                    statusText = "初始化测速任务...",
+                    progressFraction = 0f,
+                    detailsLog = "",
+                    isFinished = false
+                )
+            )
         }
         viewModelScope.launch(ioDispatcher) {
-            val profile = dataSource.decodeServerConfig(targetGuid)
-            if (profile == null) {
-                toastError(R.string.toast_failure)
-                return@launch
+            val result = com.v2ray.ang.handler.CdnIpOptimizer.autoOptimizeTopNodesWithProgress(
+                getApplication()
+            ) { stepText, progressFraction, detailsLog ->
+                _uiState.update { state ->
+                    state.copy(
+                        optimizeDialogState = state.optimizeDialogState.copy(
+                            statusText = stepText,
+                            progressFraction = progressFraction,
+                            detailsLog = detailsLog
+                        )
+                    )
+                }
             }
-            toast("正在对 CDN IP 池并发测速优选...")
-            val result = com.v2ray.ang.handler.CdnIpOptimizer.optimizeProfile(targetGuid, profile)
+
             if (result.success) {
-                toast("优选成功！最低延迟 IP: ${result.bestIp} (${result.delayMillis} ms)")
                 cacheMutex.withLock { groupDataCache.clear() }
-                setupGroupTab(forceRefresh = true)
-            } else {
-                toast(result.message)
+                setupGroupTab(forceRefresh = true).join()
+                subscriptionIdChanged(result.groupGuid)
+                if (!result.firstNodeGuid.isNullOrEmpty()) {
+                    updateSelectedGuid(result.firstNodeGuid)
+                }
             }
+
+            _uiState.update { state ->
+                state.copy(
+                    optimizeDialogState = state.optimizeDialogState.copy(
+                        statusText = result.message,
+                        progressFraction = 1.0f,
+                        isFinished = true
+                    )
+                )
+            }
+        }
+    }
+
+    fun dismissOptimizeDialog() {
+        _uiState.update {
+            it.copy(optimizeDialogState = OptimizeDialogState(showDialog = false))
         }
     }
 
