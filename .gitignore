@@ -1,0 +1,4 @@
+*.apk
+scratch/
+.system_generated/
+*.log
