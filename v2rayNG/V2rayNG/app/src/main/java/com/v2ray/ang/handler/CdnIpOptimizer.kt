@@ -157,7 +157,7 @@ object CdnIpOptimizer {
         log("开始检索全量节点...")
         onProgress("开始检索全量节点...", 0.05f, detailsBuilder.toString())
 
-        val allGuids = MmkvManager.decodeServerList("")
+        val allGuids = MmkvManager.decodeAllServerList()
         if (allGuids.isEmpty()) {
             log("错误：没有找到任何节点配置")
             onProgress("错误：没有节点配置", 1.0f, detailsBuilder.toString())
