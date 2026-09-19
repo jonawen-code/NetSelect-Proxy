@@ -1,0 +1,19 @@
+#Sat Sep 19 12:01:02 GMT+08:00 2026
+path.4=9/classes.dex
+path.3=3/classes.dex
+path.2=1/classes.dex
+path.1=0/classes.dex
+path.5=classes2.dex
+path.0=classes.dex
+base.4=C\:\\Users\\jonaw\\antigravity\\goofy-goodall\\ip-proxy-app\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\9\\classes.dex
+base.3=C\:\\Users\\jonaw\\antigravity\\goofy-goodall\\ip-proxy-app\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\3\\classes.dex
+base.2=C\:\\Users\\jonaw\\antigravity\\goofy-goodall\\ip-proxy-app\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
+base.1=C\:\\Users\\jonaw\\antigravity\\goofy-goodall\\ip-proxy-app\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.0=C\:\\Users\\jonaw\\antigravity\\goofy-goodall\\ip-proxy-app\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+renamed.3=classes4.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
+renamed.5=classes6.dex
+renamed.4=classes5.dex
+base.5=C\:\\Users\\jonaw\\antigravity\\goofy-goodall\\ip-proxy-app\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex

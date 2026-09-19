@@ -1,0 +1,15 @@
+R_DEF: Internal format may change without notice
+local
+id btnConnect
+id btnImportClipboard
+id btnOptimize
+id btnScanQr
+id btnTestRealConnection
+id btnUpdateSub
+id etNodeUrl
+id etSubUrl
+id tvOptimizedIp
+id tvRealDelay
+id tvStatus
+id tvSubInfo
+layout activity_main
