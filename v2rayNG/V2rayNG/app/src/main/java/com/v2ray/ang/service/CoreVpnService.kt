@@ -87,14 +87,20 @@ class CoreVpnService : VpnService(), ServiceControl {
             return START_NOT_STICKY
         }
         LogUtil.i(AppConfig.TAG, "StartCore-VPN: Service command received, systemVpnStart=$isSystemVpnStart")
-        if (!setupVpnService()) {
+        try {
+            if (!setupVpnService()) {
+                unlockStart()
+                stopSelf()
+                return START_NOT_STICKY
+            }
+            startService()
+            return START_STICKY
+        } catch (e: Throwable) {
+            LogUtil.e(AppConfig.TAG, "StartCore-VPN: Failed to start VPN service", e)
             unlockStart()
-            // Stop service if setup fails to avoid infinite restart loops (START_STICKY)
             stopSelf()
             return START_NOT_STICKY
         }
-        startService()
-        return START_STICKY
     }
 
     override fun getService(): Service {
@@ -304,17 +310,27 @@ class CoreVpnService : VpnService(), ServiceControl {
      */
     private fun runTun2socks() {
         if (SettingsManager.isUsingHevTun()) {
-            tun2SocksService = TProxyService(
-                context = applicationContext,
-                vpnInterface = mInterface,
-                isRunningProvider = { isRunning },
-                restartCallback = { runTun2socks() }
-            )
+            try {
+                tun2SocksService = TProxyService(
+                    context = applicationContext,
+                    vpnInterface = mInterface,
+                    isRunningProvider = { isRunning },
+                    restartCallback = { runTun2socks() }
+                )
+            } catch (e: Throwable) {
+                LogUtil.e(AppConfig.TAG, "StartCore-VPN: Failed to load hev-socks5-tunnel, falling back to Xray TUN", e)
+                tun2SocksService = null
+            }
         } else {
             tun2SocksService = null
         }
 
-        tun2SocksService?.startTun2Socks()
+        try {
+            tun2SocksService?.startTun2Socks()
+        } catch (e: Throwable) {
+            LogUtil.e(AppConfig.TAG, "StartCore-VPN: Failed to start tun2socks", e)
+            tun2SocksService = null
+        }
     }
 
     private fun stopAllService(isForced: Boolean = true) {
