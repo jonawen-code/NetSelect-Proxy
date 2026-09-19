@@ -1,4 +1,10 @@
+.gradle/
+build/
+local.properties
+v2rayNG/V2rayNG/build/
+v2rayNG/V2rayNG/app/build/
+v2rayNG/V2rayNG/local.properties
+v2rayNG/V2rayNG/.gradle/
+v2rayNG/AndroidLibXrayLite/build/
+v2rayNG/hev-socks5-tunnel/build/
 *.apk
-scratch/
-.system_generated/
-*.log
